@@ -7,6 +7,14 @@ on:
         required: true
         type: string
 
+      REGISTRY_USERNAME:
+        required: true
+        type: string
+
+    secrets:
+      REGISTRY_PASSWORD:
+        required: true
+
 jobs:
   build:
     runs-on: self-hosted
@@ -17,15 +25,5 @@ jobs:
       - name: Docker Login
         run: |
           echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login artifactory.infra.vcreatek.com \
-          -u "${{ secrets.REGISTRY_USERNAME }}" \
+          -u "${{ inputs.REGISTRY_USERNAME }}" \
           --password-stdin
-
-      - name: Build Image
-        run: |
-          docker build \
-          -t artifactory.infra.vcreatek.com/${{ inputs.image_name }}:${{ github.sha }} .
-
-      - name: Push Image
-        run: |
-          docker push \
-          artifactory.infra.vcreatek.com/${{ inputs.image_name }}:${{ github.sha }}
