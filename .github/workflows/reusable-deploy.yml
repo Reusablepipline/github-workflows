@@ -1,0 +1,57 @@
+name: Reusable Deploy
+
+on:
+  workflow_call:
+    inputs:
+      REGISTRY_USERNAME:
+        required: true
+        type: string
+
+      runner_label:
+        required: true
+        type: string
+
+      DEPLOY_USER:
+        required: true
+        type: string
+
+      DEPLOY_HOST:
+        required: true
+        type: string
+
+      APP_PATH:
+        required: true
+        type: string
+
+    secrets:
+      REGISTRY_PASSWORD:
+        required: true
+
+jobs:
+  deploy:
+    runs-on:
+      - self-hosted
+      - ${{ inputs.runner_label }}
+
+    steps:
+      - name: Deploy Application
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ inputs.DEPLOY_USER }}@${{ inputs.DEPLOY_HOST }} "
+          
+          docker logout artifactory.infra.vcreatek.com || true
+
+          echo '${{ secrets.REGISTRY_PASSWORD }}' | \
+          docker login artifactory.infra.vcreatek.com \
+          -u '${{ inputs.REGISTRY_USERNAME }}' \
+          --password-stdin
+
+          cd ${{ inputs.APP_PATH }}
+
+          docker-compose pull
+
+          docker-compose down || true
+
+          docker-compose up -d --force-recreate
+
+          docker ps
+          "
