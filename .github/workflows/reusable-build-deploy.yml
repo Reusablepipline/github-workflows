@@ -11,19 +11,36 @@ on:
         required: true
         type: string
 
+      runner_label:
+        required: true
+        type: string
+
     secrets:
       REGISTRY_PASSWORD:
         required: true
 
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on:
+      - self-hosted
+      - ${{ inputs.runner_label }}
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
       - name: Docker Login
         run: |
           echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login artifactory.infra.vcreatek.com \
           -u "${{ inputs.REGISTRY_USERNAME }}" \
           --password-stdin
+
+      - name: Build Image
+        run: |
+          docker build \
+          -t artifactory.infra.vcreatek.com/${{ inputs.image_name }}:${{ github.sha }} .
+
+      - name: Push Image
+        run: |
+          docker push \
+          artifactory.infra.vcreatek.com/${{ inputs.image_name }}:${{ github.sha }}
