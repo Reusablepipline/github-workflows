@@ -52,10 +52,11 @@ jobs:
 
       - name: Build Image
         run: |
-          docker build \
-          -t artifactory.infra.vcreatek.com/${{ inputs.image_name }}:${{ github.sha }} .
+         docker build \
+           -t artifactory.infra.vcreatek.com/${{ inputs.image_name }}:${{ github.sha }} \
+           -t artifactory.infra.vcreatek.com/${{ inputs.image_name }}:latest .
 
       - name: Push Image
         run: |
-          docker push \
-          artifactory.infra.vcreatek.com/${{ inputs.image_name }}:${{ github.sha }}
+         docker push artifactory.infra.vcreatek.com/${{ inputs.image_name }}:${{ github.sha }}
+         docker push artifactory.infra.vcreatek.com/${{ inputs.image_name }}:latest
