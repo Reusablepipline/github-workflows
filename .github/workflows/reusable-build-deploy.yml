@@ -32,6 +32,9 @@ jobs:
           echo "Length: ${#REGISTRY_PASSWORD}"
         env:
           REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+      - name: Debug Username
+        run: |
+          echo "Username=[${{ inputs.REGISTRY_USERNAME }}]"
           
       - name: Docker Login
         run: |
