@@ -37,6 +37,9 @@ jobs:
           echo "Username=[${{ inputs.REGISTRY_USERNAME }}]"
           
       - name: Docker Login
+        env:
+         REGISTRY_USER: ${{ inputs.REGISTRY_USERNAME }}
+         REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
         run: |
           echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login artifactory.infra.vcreatek.com \
           -u "${{ inputs.REGISTRY_USERNAME }}" \
