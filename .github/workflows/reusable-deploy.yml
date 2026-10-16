@@ -34,7 +34,7 @@ jobs:
     steps:
       - name: Deploy Application
         env:
-          REGISTRY_USER: ${{ secrets.REGISTRY_USERNAME }}
+          REGISTRY_USER: ${{ inputs.REGISTRY_USERNAME }}
           REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
         run: |
           ssh -o StrictHostKeyChecking=no test@10.10.0.20 "
