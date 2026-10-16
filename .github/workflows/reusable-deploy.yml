@@ -40,7 +40,7 @@ jobs:
 
           echo '${{ secrets.REGISTRY_PASSWORD }}' | \
           docker login artifactory.infra.vcreatek.com \
-          -u '${{ inputs.REGISTRY_USERNAME }}' \
+          -u '${{ secrets.REGISTRY_USERNAME }}' \
           --password-stdin
 
           cd ${{ inputs.APP_PATH }}
