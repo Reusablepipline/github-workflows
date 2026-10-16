@@ -35,14 +35,19 @@ jobs:
       - name: Debug Username
         run: |
           echo "Username=[${{ inputs.REGISTRY_USERNAME }}]"
+      - name: Verify Username
+        env:
+         REGISTRY_USER: ${{ inputs.REGISTRY_USERNAME }}
+        run: |
+         printf 'Username=[%s]\n' "$REGISTRY_USER"
           
       - name: Docker Login
         env:
          REGISTRY_USER: ${{ inputs.REGISTRY_USERNAME }}
          REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
         run: |
-          echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login artifactory.infra.vcreatek.com \
-          -u "${{ inputs.REGISTRY_USERNAME }}" \
+          echo "$REGISTRY_PASSWORD" | docker login artifactory.infra.vcreatek.com \
+          -u "$REGISTRY_USER" \
           --password-stdin
 
       - name: Build Image
