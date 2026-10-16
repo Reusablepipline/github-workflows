@@ -33,17 +33,20 @@ jobs:
 
     steps:
       - name: Deploy Application
+        env:
+          REGISTRY_USER: ${{ secrets.REGISTRY_USERNAME }}
+          REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ inputs.DEPLOY_USER }}@${{ inputs.DEPLOY_HOST }} "
-          
+          ssh -o StrictHostKeyChecking=no test@10.10.0.20 "
+
           docker logout artifactory.infra.vcreatek.com || true
 
-          echo '${{ secrets.REGISTRY_PASSWORD }}' | \
+          echo '$REGISTRY_PASSWORD' | \
           docker login artifactory.infra.vcreatek.com \
-          -u '${{ secrets.REGISTRY_USERNAME }}' \
+          -u '$REGISTRY_USER' \
           --password-stdin
 
-          cd ${{ inputs.APP_PATH }}
+          cd /home/test/test-pipline
 
           docker-compose pull
 
@@ -52,4 +55,5 @@ jobs:
           docker-compose up -d --force-recreate
 
           docker ps
+
           "
