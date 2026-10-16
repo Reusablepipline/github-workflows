@@ -27,6 +27,12 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Debug Secret Length
+        run: |
+          echo "Length: ${#REGISTRY_PASSWORD}"
+        env:
+          REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+          
       - name: Docker Login
         run: |
           echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login artifactory.infra.vcreatek.com \
