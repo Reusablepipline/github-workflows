@@ -19,6 +19,9 @@ on:
       REGISTRY_PASSWORD:
         required: true
 
+      HELM_REPO_TOKEN:
+       required: true
+
 jobs:
   build:
     runs-on: self-hosted
@@ -60,3 +63,28 @@ jobs:
         run: |
          docker push artifactory.infra.vcreatek.com/${{ inputs.image_name }}:${{ github.sha }}
          docker push artifactory.infra.vcreatek.com/${{ inputs.image_name }}:latest
+
+      - name: Checkout Helm Repo
+        uses: actions/checkout@v4
+        with:
+          repository: vijaykkum/test-on-premises-connection-helm
+          token: ${{ secrets.HELM_REPO_TOKEN }}
+          path: helm-repo
+
+      - name: Update Helm Image Tag
+        run: |
+          sed -i "s/^  tag:.*/  tag: ${GITHUB_SHA}/" \
+          helm-repo/values.yaml
+
+      - name: Commit Helm Changes
+        run: |
+          cd helm-repo
+
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          git add values.yaml
+
+          git commit -m "Deploy ${GITHUB_SHA}" || true
+
+          git push
