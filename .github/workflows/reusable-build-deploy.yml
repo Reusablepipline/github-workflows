@@ -7,6 +7,10 @@ on:
         required: true
         type: string
 
+      app_name:
+        required: true
+        type: string
+        
       REGISTRY_USERNAME:
         required: true
         type: string
@@ -67,14 +71,14 @@ jobs:
       - name: Checkout Helm Repo
         uses: actions/checkout@v4
         with:
-          repository: vijaykkum/test-on-premises-connection-helm
+          repository: Reusablepipline/vcreatek-gitops
           token: ${{ secrets.HELM_REPO_TOKEN }}
           path: helm-repo
 
       - name: Update Helm Image Tag
         run: |
           sed -i "s/^  tag:.*/  tag: ${GITHUB_SHA}/" \
-          helm-repo/values.yaml
+          helm-repo/${{ inputs.app_name }}/values.yaml
 
       - name: Commit Helm Changes
         run: |
