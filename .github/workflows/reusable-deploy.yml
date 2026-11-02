@@ -37,7 +37,7 @@ jobs:
           REGISTRY_USER: ${{ inputs.REGISTRY_USERNAME }}
           REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
         run: |
-          ssh -o StrictHostKeyChecking=no test@10.10.0.20 "
+          ssh -o StrictHostKeyChecking=no pms-app@10.10.1.56 "
 
           docker logout artifactory.infra.vcreatek.com || true
 
